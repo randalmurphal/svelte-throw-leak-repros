@@ -6,8 +6,8 @@ the graph permanently half-linked":
 
 | Folder | Bug | Lifetime of the leak |
 | --- | --- | --- |
-| [`issue1-render-throw-derived-leak/`](./issue1-render-throw-derived-leak) | A reaction throws after first-reading a fresh derived → the derived stays connected with zero readers | Forever — survives `unmount()` of the whole app |
-| [`issue2-teardown-throw-strand/`](./issue2-teardown-throw-strand) | A `$effect` teardown throws while a keyed `{#each}` destroys a batch of leaving rows → the rest of the batch is never destroyed | Until the `{#each}` block itself is destroyed (the whole session for a long-lived list view) |
+| [`issue1-render-throw-derived-leak/`](./issue1-render-throw-derived-leak) ([sveltejs/svelte#18414](https://github.com/sveltejs/svelte/issues/18414)) | A reaction throws after first-reading a fresh derived → the derived stays connected with zero readers | Forever — survives `unmount()` of the whole app |
+| [`issue2-teardown-throw-strand/`](./issue2-teardown-throw-strand) ([sveltejs/svelte#18415](https://github.com/sveltejs/svelte/issues/18415)) | A `$effect` teardown throws while a keyed `{#each}` destroys a batch of leaving rows → the rest of the batch is never destroyed | Until the `{#each}` block itself is destroyed (the whole session for a long-lived list view) |
 
 ## Run
 
