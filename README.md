@@ -11,7 +11,7 @@ third needs no exception at all.
 | --- | --- | --- |
 | [`issue1-render-throw-derived-leak/`](./issue1-render-throw-derived-leak) ([sveltejs/svelte#18414](https://github.com/sveltejs/svelte/issues/18414)) | A reaction throws after first-reading a fresh derived → the derived stays connected with zero readers | Forever — survives `unmount()` of the whole app |
 | [`issue2-teardown-throw-strand/`](./issue2-teardown-throw-strand) ([sveltejs/svelte#18415](https://github.com/sveltejs/svelte/issues/18415)) | A `$effect` teardown throws while a keyed `{#each}` destroys a batch of leaving rows → the rest of the batch is never destroyed | Until the `{#each}` block itself is destroyed (the whole session for a long-lived list view) |
-| [`issue3-init-read-connect-leak/`](./issue3-init-read-connect-leak) | **No throw required.** An init-time read of a prop backed by a parent prop-expression memo — a prop *default* alone triggers it via `prop()` — evaluates the memo unconnected while `is_updating_effect` is true; every derived the memo reads gets force-connected with an unregisterable reader | Forever — survives `unmount()`; one zombie chain per component instance ever created |
+| [`issue3-init-read-connect-leak/`](./issue3-init-read-connect-leak) ([sveltejs/svelte#18420](https://github.com/sveltejs/svelte/issues/18420)) | **No throw required.** An init-time read of a prop backed by a parent prop-expression memo — a prop *default* alone triggers it via `prop()` — evaluates the memo unconnected while `is_updating_effect` is true; every derived the memo reads gets force-connected with an unregisterable reader | Forever — survives `unmount()`; one zombie chain per component instance ever created |
 
 ## Run
 
