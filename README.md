@@ -1,17 +1,21 @@
 # Svelte 5: reactive-graph leak reproductions
 
-Minimal reproductions for three Svelte 5 memory leaks. All three share the
+Minimal reproductions for four Svelte 5 memory leaks. All four share the
 final state — a derived left **connected into its dependencies' `reactions`
 arrays with zero subscribers of its own**, which `remove_reaction`'s
 disconnect cascade can never reach — but they get there differently: the
 first two need an exception thrown by user code at an unlucky moment; the
-third needs no exception at all.
+last two need no exception at all. (Issue 4 reproduces
+[sveltejs/svelte#18501](https://github.com/sveltejs/svelte/issues/18501),
+filed independently by someone else — same leak class as issue 3, different
+trigger.)
 
 | Folder | Bug | Lifetime of the leak |
 | --- | --- | --- |
 | [`issue1-render-throw-derived-leak/`](./issue1-render-throw-derived-leak) ([sveltejs/svelte#18414](https://github.com/sveltejs/svelte/issues/18414)) | A reaction throws after first-reading a fresh derived → the derived stays connected with zero readers | Forever — survives `unmount()` of the whole app |
 | [`issue2-teardown-throw-strand/`](./issue2-teardown-throw-strand) ([sveltejs/svelte#18415](https://github.com/sveltejs/svelte/issues/18415)) | A `$effect` teardown throws while a keyed `{#each}` destroys a batch of leaving rows → the rest of the batch is never destroyed | Until the `{#each}` block itself is destroyed (the whole session for a long-lived list view) |
 | [`issue3-init-read-connect-leak/`](./issue3-init-read-connect-leak) ([sveltejs/svelte#18420](https://github.com/sveltejs/svelte/issues/18420)) | **No throw required.** An init-time read of a prop backed by a parent prop-expression memo — a prop *default* alone triggers it via `prop()` — evaluates the memo unconnected while `is_updating_effect` is true; every derived the memo reads gets force-connected with an unregisterable reader | Forever — survives `unmount()`; one zombie chain per component instance ever created |
+| [`issue4-untracked-derived-leak/`](./issue4-untracked-derived-leak) ([sveltejs/svelte#18501](https://github.com/sveltejs/svelte/issues/18501)) | **No throw required.** A `$derived` chain whose only read is an untracked context — e.g. a `$state(...)` initializer — subscribes to its dependencies on first evaluation but never gains a reader of its own, so destroy never disconnects it | Forever — survives `unmount()`; one stranded subscriber on the shared signal per mount/unmount cycle |
 
 ## Run
 
